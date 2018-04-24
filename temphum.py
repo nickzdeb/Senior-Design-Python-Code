@@ -252,20 +252,15 @@ if __name__ == "__main__":
       s.trigger()
       time.sleep(0.2)
 
-      print("Tem: ", s.temperature())
-      print("Hum: ", s.humidity())
-
       # Push data to online data base
       data={"uuid": "1","entry_num": r, "humidity": s.humidity(), "temperature": s.temperature()}
       result=db.temp_hum.insert(data)
    
       # light level
       answer = lgt.lightReading()
-      print("lgt: ", answer)
       time.sleep(30)
 
       # PIR
       a = pir.PIR_reading()
-      print("PIR: ", a)
       time.sleep(30)
 
