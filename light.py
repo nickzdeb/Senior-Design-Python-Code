@@ -1,13 +1,5 @@
-#test clock
-#!/usr/bin/env python
 import time
 import RPi.GPIO as GPIO
-import datetime
-import pymongo
-
-from pymongo import MongoClient
-client = MongoClient('mongodb://admin:admin@ds237979.mlab.com:37979/apollo-dev')
-db=client['apollo-dev']
 
 GPIO.setwarnings(False)
 
@@ -30,7 +22,6 @@ def convert_to_tens(digit_array):
 
 # Function used to read data from light sensor
 def lightReading():
-   now = datetime.datetime.now()
    
    # Set pins
    GPIO.setmode(GPIO.BCM)
@@ -67,7 +58,4 @@ def lightReading():
    # Convert Binary to 10s
    answer = convert_to_tens(data)
 
-   #Store in database
-   data={"uuid": "1", "entry_num": 5, "lighting": answer, "day": now.day, "time": str(now.hour)+":"+str(now.minute)}
-   result=db.lighting.insert(data)
    return answer

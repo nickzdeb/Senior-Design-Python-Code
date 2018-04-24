@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-
-# 2014-07-11 DHT22.py
-
 import time
 import atexit
 import DHT22
 import light as lgt       # light sensor
 import PIR as pir              # pir sensor
-##import light_control as lc     # light control logic
-
+from datetime import datetime
 import pigpio
 import pymongo
 from pymongo import MongoClient
@@ -241,27 +236,37 @@ class sensor:
          self.cb = None
 
 if __name__ == "__main__":
+
+   r = 0 #counter
+   # Intervals of about 2 seconds or less will eventually hang the DHT22.
+   INTERVAL=3
+   pi = pigpio.pi()
+   
    while True:
-      # Intervals of about 2 seconds or less will eventually hang the DHT22.
-      INTERVAL=3
-      pi = pigpio.pi()
-      s = DHT22.sensor(pi, 6, LED=16, power=8) #change gpio pin here
-      r = 0
       
       # Tem and Hum
+      s = DHT22.sensor(pi, 6, LED=16, power=8) #change gpio pin here
       r += 1
       s.trigger()
       time.sleep(0.2)
-
-      # Push data to online data base
-      data={"uuid": "1","entry_num": r, "humidity": s.humidity(), "temperature": s.temperature()}
-      result=db.temp_hum.insert(data)
-   
       # light level
-      answer = lgt.lightReading()
-      time.sleep(30)
-
+      lgtData = lgt.lightReading()
       # PIR
-      a = pir.PIR_reading()
+      pirData = pir.PIR_reading()
+      
+      # Push data to online data base
+      # get time now 
+      now = datetime.now()
+
+      # Push Tem and HUM
+      data={"uuid": "1","entry_num": r, "humidity": s.humidity(), "temperature": s.temperature(), "time": str(now.hour)+":"+str(now.minute)}
+      result=db.temp_hum.insert(data)
+      # Push light level
+      data={"uuid": "1", "entry_num": r, "lighting": lgtData, "time": str(now.hour)+":"+str(now.minute)}
+      result=db.lighting.insert(data)
+      # Push PIR
+      data={"uuid": "1", "entry_num": r, "motion": bool(pirData), "time": str(now.hour)+":"+str(now.minute)}
+      result=db.motion.insert(data)
+      
       time.sleep(30)
 
