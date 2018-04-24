@@ -19,9 +19,9 @@ def PIR_reading():
     r = 0
 
     r += 1
-##    time.sleep(2)
+    
     a = float(GPIO.input(pin_to_circuit1))
-##    print(a)
+
     #Store in database 
     data={"uuid": "1", "entry_num": r, "motion": bool(a)}
     result=db.motion.insert(data)

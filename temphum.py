@@ -251,22 +251,14 @@ if __name__ == "__main__":
       r += 1
       s.trigger()
       time.sleep(0.2)
+
       print("Tem: ", s.temperature())
       print("Hum: ", s.humidity())
-      # Pass data to online data base
+
+      # Push data to online data base
       data={"uuid": "1","entry_num": r, "humidity": s.humidity(), "temperature": s.temperature()}
       result=db.temp_hum.insert(data)
-   ##   print("Stored in Database", result)
-
-   ##      print("{} {} {} {:3.2f} {} {} {} {}".format(
-   ##         r, s.humidity(), s.temperature(), s.staleness(),
-   ##         s.bad_checksum(), s.short_message(), s.missing_message(),
-   ##         s.sensor_resets()))
-   ##      next_reading += INTERVAL
-   ##      time.sleep(next_reading-time.time()) # Overall INTERVAL second polling.
-      #time.sleep(5) #Need to figure out how to slow down aquisition
-      s.cancel()
-
+   
       # light level
       answer = lgt.lightReading()
       print("lgt: ", answer)
@@ -276,9 +268,4 @@ if __name__ == "__main__":
       a = pir.PIR_reading()
       print("PIR: ", a)
       time.sleep(30)
-##
-##      # Light control
-##      lc.lightControl()
-##      time.sleep(2)
 
-      ##pi.stop()
