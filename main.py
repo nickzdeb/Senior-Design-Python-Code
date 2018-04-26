@@ -268,5 +268,5 @@ if __name__ == "__main__":
       data={"uuid": "1", "entry_num": r, "motion": bool(pirData), "time": str(now.hour)+":"+str(now.minute)}
       result=db.motion.insert(data)
       
-      time.sleep(30)
+      time.sleep(60)
 

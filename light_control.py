@@ -41,11 +41,11 @@ ls1 = False
 ls2 = False
 lp = True
 rp = True
-    
-##while(True):
-def lightControl(light1_state, light2_state, left_prev, right_prev):
+s1=True
+s2=True
+
+def lightControl(light1_state, light2_state, left_prev, right_prev, app_state1, app_state2):
     # get control from app
-    #Switch 1 == left pad
     try:
         switch1 = db.light_control_1.find().sort('_created_at',-1).limit(1)
         for object in switch1:
@@ -71,7 +71,10 @@ def lightControl(light1_state, light2_state, left_prev, right_prev):
     #print("light control right pad: ",right_check) 
 
     # control the light
-    if (switch1_isOn or left_check):
+    if switch1_isOn == app_state1:
+        light1_state = not light1_state
+        app_state1=not app_state1
+    if left_check:
         if left_prev:
             light1_state = not light1_state
         left_prev=False
@@ -80,7 +83,11 @@ def lightControl(light1_state, light2_state, left_prev, right_prev):
         left_prev=True
         GPIO.output(left_led, GPIO.HIGH)
 
-    if (switch2_isOn or right_check):
+
+    if switch2_isOn == app_state2:
+        light2_state = not light2_state
+        app_state2=not app_state2
+    if right_check:
         if right_prev:
             light2_state = not light2_state
         right_prev=False
@@ -101,8 +108,6 @@ def lightControl(light1_state, light2_state, left_prev, right_prev):
         GPIO.output(ss_relay_2, GPIO.HIGH)
     return light1_state, light2_state, left_prev, right_prev
 while True:
-    time.sleep(0.01)
-    ls1,ls2,lp,rp = lightControl(ls1,ls2,lp,rp)
-#Store in database
-#data={"uuid": "1", "entry_num": 5, "lighting": answer, "day": now.day, "time": str(now.hour)+":"+str(now.minute)}
-#result=db.light_control.insert(data)
+    time.sleep(.1)
+    ls1,ls2,lp,rp,s1,s2 = lightControl(ls1,ls2,lp,rp,s1,s2)
+
